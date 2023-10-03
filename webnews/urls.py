@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from noticia.views import home
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
-    path('',home, name='home'),
-    path('listar/', include('noticia.urls')),
+    path('', home, name='home' ),
+    path('autor/', include('noticia.urls')),
     path('admin/', admin.site.urls),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

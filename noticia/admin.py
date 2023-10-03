@@ -3,10 +3,9 @@ from noticia import models
 """from .models import Autor"""
 
 # Register your models here.
-@admin.register(models.Autor)
-class AutorAdmin(admin.ModelAdmin):
-    search_fields = ('nome_Autor',)
+from django.contrib import admin
+from .models import Autor
 
-@admin.register(models.Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    search_fields = ('nome_Categoria', 'descricao')
+# Register your models here.
+
+admin.site.register(Autor)
