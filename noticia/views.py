@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect 
 from .models import Autor
 from .forms import AutorForm
+from django.contrib import messages
 # Create your views here.
 
 def home(request):
@@ -19,6 +20,7 @@ def cadastrar(request):
         form = AutorForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.add_message(request, messages.SUCCESS, "Autor cadastradado com sucesso")
             return redirect("cadastrar")
     else:
          form = AutorForm()
@@ -31,6 +33,7 @@ def atualizar(request, id):
         form = AutorForm(request.POST, request.FILES, instance=autor)
         if form.is_valid():
             form.save()
+            messages.add_message(request, messages.SUCCESS, "Autor atualizado com sucesso")
             return redirect("atualizar", id=id)
         else:
             return render(request, 'atualizar.html', {'form': form})
@@ -40,4 +43,5 @@ def atualizar(request, id):
 def deletar(request, id):
     autor = Autor.objects.get(id=id)
     autor.delete()
+    messages.add_message(request, messages.WARNING, "Autor deletado")
     return redirect('listar')

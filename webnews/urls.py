@@ -25,3 +25,5 @@ urlpatterns = [
     path('autor/', include('noticia.urls')),
     path('admin/', admin.site.urls),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Configuração necessaria para mostrar imagens
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
