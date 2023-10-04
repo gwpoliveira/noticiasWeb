@@ -16,7 +16,7 @@ def detalhar(request, id):
 
 def cadastrar(request):
     if request.method == "POST":
-        form = AutorForm(request.POST)
+        form = AutorForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect("cadastrar")
@@ -28,7 +28,7 @@ def atualizar(request, id):
     autor = Autor.objects.get(id=id)
     form = AutorForm(instance=autor)
     if request.method == "POST":
-        form = AutorForm(request.POST, instance=autor)
+        form = AutorForm(request.POST, request.FILES, instance=autor)
         if form.is_valid():
             form.save()
             return redirect("atualizar", id=id)
