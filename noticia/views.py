@@ -3,7 +3,7 @@ from django.urls import reverse
 from .models import Autor
 from .forms import AutorForm
 from django.contrib import messages
-from django.views.generic import TemplateView, ListView, DetailView, CreateView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
 class HomeTempleteView(TemplateView):
@@ -30,34 +30,23 @@ class AutorCreateView(CreateView):
     def get_success_url(self):
         messages.success(self.request,"Autor cadastradado com sucesso")
         return reverse('listar')
-
-# def cadastrar(request):
-#     if request.method == "POST":
-#         form = AutorForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             messages.add_message(request, messages.SUCCESS, "Autor cadastradado com sucesso")
-#             return redirect("cadastrar")
-#     else:
-#          form = AutorForm()
-#          return render(request, 'cadastrar.html', {'form': form})
     
-def atualizar(request, id):
-    autor = Autor.objects.get(id=id)
-    form = AutorForm(instance=autor)
-    if request.method == "POST":
-        form = AutorForm(request.POST, request.FILES, instance=autor)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.SUCCESS, "Autor atualizado com sucesso")
-            return redirect("atualizar", id=id)
-        else:
-            return render(request, 'atualizar.html', {'form': form})
-    else:
-         return render(request, 'atualizar.html', {'form': form})
+class AutorUpdateView(UpdateView):
+    model=Autor
+    template_name = 'atualizar.html'
+    form_class = AutorForm
+    pk_url_kwarg = 'id'
+    
+    def get_success_url(self):
+        messages.success(self.request,"Autor atualizado com sucesso")
+        return reverse('listar')
 
-def deletar(request, id):
-    autor = Autor.objects.get(id=id)
-    autor.delete()
-    messages.add_message(request, messages.WARNING, "Autor deletado")
-    return redirect('listar')
+
+class AutorDeleteView(DeleteView):
+    model=Autor
+    template_name='autor_confirm_delete.html'
+    pk_url_kwarg='id'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "Autor deletado com sucesso!")
+        return reverse('listar')
