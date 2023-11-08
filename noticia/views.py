@@ -31,8 +31,17 @@ class AutorCreateView(CreateView):
         messages.success(self.request,"Autor cadastradado com sucesso")
         return reverse('listar')
 
+# def cadastrar(request):
+#     if request.method == "POST":
+#         form = AutorForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             messages.add_message(request, messages.SUCCESS, "Autor cadastradado com sucesso")
+#             return redirect("cadastrar")
+#     else:
+#          form = AutorForm()
+#          return render(request, 'cadastrar.html', {'form': form})
     
-
 def atualizar(request, id):
     autor = Autor.objects.get(id=id)
     form = AutorForm(instance=autor)
