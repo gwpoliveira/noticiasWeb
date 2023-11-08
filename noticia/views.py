@@ -1,30 +1,46 @@
 from django.shortcuts import render, redirect 
+from django.urls import reverse
 from .models import Autor
 from .forms import AutorForm
 from django.contrib import messages
+from django.views.generic import TemplateView, ListView, DetailView, CreateView
+
+
+class HomeTempleteView(TemplateView):
+    template_name = 'home.html'
 # Create your views here.
 
-def home(request):
-    return render(request, 'home.html')
+class AutorListView(ListView):
+    model = Autor
+    template_name = 'listar.html'
+    context_object_name = 'autores'
+    ordering='-nome'
+    
+class AutoDetailView(DetailView):
+    model=Autor
+    template_name = 'detalhar.html'
+    context_object_name = 'autor'
+    pk_url_kwarg ='id'
+    
+class AutorCreateView(CreateView):
+    model=Autor
+    template_name='cadastrar.html'
+    form_class=AutorForm
+    
+    def get_success_url(self):
+        messages.success(self.request,"Autor cadastradado com sucesso")
+        return reverse('listar')
 
-def listar(request):
-    autores = Autor.objects.all().order_by('-nome')
-    return render(request, 'listar.html', {'autores':autores})
-
-def detalhar(request, id):
-    autor = Autor.objects.get(id=id)
-    return render(request, 'detalhar.html', {'autor':autor})
-
-def cadastrar(request):
-    if request.method == "POST":
-        form = AutorForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.SUCCESS, "Autor cadastradado com sucesso")
-            return redirect("cadastrar")
-    else:
-         form = AutorForm()
-         return render(request, 'cadastrar.html', {'form': form})
+# def cadastrar(request):
+#     if request.method == "POST":
+#         form = AutorForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             messages.add_message(request, messages.SUCCESS, "Autor cadastradado com sucesso")
+#             return redirect("cadastrar")
+#     else:
+#          form = AutorForm()
+#          return render(request, 'cadastrar.html', {'form': form})
     
 def atualizar(request, id):
     autor = Autor.objects.get(id=id)
