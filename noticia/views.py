@@ -15,7 +15,8 @@ class AutorListView(ListView):
     template_name = 'listar.html'
     context_object_name = 'autores'
     ordering='-nome'
-    
+    paginate_by = 5
+   
 class AutoDetailView(DetailView):
     model=Autor
     template_name = 'detalhar.html'
