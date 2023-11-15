@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect 
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import Autor, Noticia
 from .forms import AutorForm, NoticiaForm
@@ -6,97 +6,101 @@ from django.contrib import messages
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 
-class HomeTempleteView(TemplateView):
-    template_name = 'home.html'
 # Create your views here.
 
+class HomeTempleteView(TemplateView):
+    template_name='home.html'
+
+    def get_context_data(self, **kwargs):
+        
+        context = super().get_context_data(**kwargs)
+        context["noticias"] = Noticia.objects.all()[:5]
+        context["autores"] = Autor.objects.all()[:5]
+        
+        return context
+
+
 class AutorListView(ListView):
-    model = Autor
-    template_name = 'autor/listar.html'
-    context_object_name = 'autores'
-    ordering='-nome'
-    paginate_by = 5
-   
-class AutoDetailView(DetailView):
     model=Autor
-    template_name = 'detalhar.html'
-    context_object_name = 'autor'
-    pk_url_kwarg ='id'
-    
+    template_name='autor/listar.html'
+    context_object_name='autores'
+    ordering='-nome'
+
+
+
+class AutorDetailView(DetailView):
+    model=Autor
+    template_name='autor/detalhar.html'
+    context_object_name='autor'
+    pk_url_kwarg='id'
+
 class AutorCreateView(CreateView):
     model=Autor
-    template_name='cadastrar.html'
+    template_name='autor/cadastrar.html'
     form_class=AutorForm
     
+
     def get_success_url(self):
-        messages.success(self.request,"Autor cadastradado com sucesso")
-        return reverse('listar')
+        messages.add_message(self.request, messages.SUCCESS, "Autor cadastrado com sucesso!")
+        return reverse('listar-autor')
     
 class AutorUpdateView(UpdateView):
     model=Autor
-    template_name = 'atualizar.html'
-    form_class = AutorForm
-    pk_url_kwarg = 'id'
-    
-    def get_success_url(self):
-        messages.success(self.request,"Autor atualizado com sucesso")
-        return reverse('listar')
+    template_name='autor/atualizar.html'
+    form_class=AutorForm
+    pk_url_kwarg='id'
 
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "Autor atualizado com sucesso!")
+        return reverse('listar-autor')
 
 class AutorDeleteView(DeleteView):
     model=Autor
-    template_name='autor_confirm_delete.html'
+    template_name='autor/autor_confirm_delete.html'
     pk_url_kwarg='id'
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Autor deletado com sucesso!")
-        return reverse('listar')
-    
-    
-    # **********************************************************
-    
-    class HomeTempleteView(TemplateView):
-    template_name = 'home.html'
-# Create your views here.
+        return reverse('listar-autor')
 
-class AutorListView(ListView):
-    model = Autor
-    template_name = 'listar.html'
-    context_object_name = 'autores'
-    ordering='-nome'
-    paginate_by = 5
-   
-class AutoDetailView(DetailView):
-    model=Autor
-    template_name = 'detalhar.html'
-    context_object_name = 'autor'
-    pk_url_kwarg ='id'
+class NoticiaListView(ListView):
+    model=Noticia
+    template_name='noticia/listar.html'
+    context_object_name='noticias'
+    ordering='-titulo'
+
+
+class NoticiaDetailView(DetailView):
+    model=Noticia
+    template_name='noticia/detalhar.html'
+    context_object_name='noticia'
+
+
+class NoticiaCreateView(CreateView):
+    model=Noticia
+    template_name='noticia/cadastrar.html'
+    form_class=NoticiaForm
     
-class AutorCreateView(CreateView):
-    model=Autor
-    template_name='cadastrar.html'
-    form_class=AutorForm
-    
+
     def get_success_url(self):
-        messages.success(self.request,"Autor cadastradado com sucesso")
-        return reverse('listar')
+        messages.add_message(self.request, messages.SUCCESS, "Noticia cadastrada com sucesso!")
+        return reverse('listar-noticia')
     
+
 class NoticiaUpdateView(UpdateView):
     model=Noticia
-    template_name = 'atualizar.html'
-    form_class = NoticiaForm
-    pk_url_kwarg = 'id'
+    template_name='noticia/atualizar.html'
+    form_class=NoticiaForm
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "Noticia atualizada com sucesso!")
+        return reverse('listar-noticia')
     
-    def get_success_url(self):
-        messages.success(self.request,"Autor atualizado com sucesso")
-        return reverse('listar')
 
-
-class AutorDeleteView(DeleteView):
-    model=Autor
-    template_name='autor_confirm_delete.html'
-    pk_url_kwarg='id'
+class NoticiaDeleteView(DeleteView):
+    model=Noticia
+    template_name='noticia/noticia_confirm_delete.html'
 
     def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, "Autor deletado com sucesso!")
-        return reverse('listar')
+        messages.add_message(self.request, messages.SUCCESS, "Noticia deletada com sucesso!")
+        return reverse('listar-noticia')
