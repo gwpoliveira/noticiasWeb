@@ -1,14 +1,10 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}Pagina Inicial do Site{% endblock %}
+{% extends 'base.html' %}
+{% load bootstrap5 %}
 
 {% block content %}
-
-    <form method="post">
-      {% csrf_token %}
-      {% bootstrap_form form %}
-      <button class="btn btn-primary" type="login">login</button>
-    </form>
-
-
+<form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
 {% endblock content %}

@@ -4,11 +4,12 @@ from .models import Autor, Noticia
 from .forms import AutorForm, NoticiaForm
 from django.contrib import messages
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 # Create your views here.
 
-class HomeTempleteView(TemplateView):
+class HomeTemplateView(TemplateView):
     template_name='home.html'
 
     def get_context_data(self, **kwargs):
@@ -20,63 +21,114 @@ class HomeTempleteView(TemplateView):
         return context
 
 
-class AutorListView(ListView):
+# def home(request):
+#     noticias = Noticia.objects.all()
+#     return render(request, 'home.html', {"noticias": noticias})
+
+class AutorListView(LoginRequiredMixin, ListView):
     model=Autor
     template_name='autor/listar.html'
     context_object_name='autores'
     ordering='-nome'
 
 
+# def listar(request):
+#     autores = Autor.objects.all().order_by('-nome')
+#     return render(request, 'listar.html', {'autores':autores})
 
-class AutorDetailView(DetailView):
+class AutorDetailView(LoginRequiredMixin, DetailView):
     model=Autor
     template_name='autor/detalhar.html'
     context_object_name='autor'
     pk_url_kwarg='id'
 
-class AutorCreateView(CreateView):
+
+# def detalhar(request, id):
+#     autor = Autor.objects.get(id=id)
+#     return render(request, 'detalhar.html', {'autor':autor})
+
+
+class AutorCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model=Autor
     template_name='autor/cadastrar.html'
     form_class=AutorForm
+    permission_required = 'noticia.add_autor'
     
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Autor cadastrado com sucesso!")
         return reverse('listar-autor')
-    
-class AutorUpdateView(UpdateView):
+
+
+
+# def cadastrar(request):
+#     if request.method == "POST":
+#         form = AutorForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             messages.add_message(request, messages.SUCCESS, "Autor cadastrado com sucesso!")
+#             return redirect("listar")
+#     else:
+#          form = AutorForm()
+#          return render(request, 'cadastrar.html', {'form': form})
+
+
+class AutorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model=Autor
     template_name='autor/atualizar.html'
     form_class=AutorForm
     pk_url_kwarg='id'
+    permission_required = 'noticia.change_autor'
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Autor atualizado com sucesso!")
         return reverse('listar-autor')
 
-class AutorDeleteView(DeleteView):
+
+# def atualizar(request, id):
+#     autor = Autor.objects.get(id=id)
+#     form = AutorForm(instance=autor)
+#     if request.method == "POST":
+#         form = AutorForm(request.POST, request.FILES, instance=autor)
+#         if form.is_valid():
+#             form.save()
+#             return redirect("atualizar", id=id)
+#         else:
+#             return render(request, 'atualizar.html', {'form': form})
+#     else:
+#          return render(request, 'atualizar.html', {'form': form})
+
+class AutorDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model=Autor
     template_name='autor/autor_confirm_delete.html'
     pk_url_kwarg='id'
+    permission_required = 'noticia.delete_autor'
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Autor deletado com sucesso!")
         return reverse('listar-autor')
 
-class NoticiaListView(ListView):
+
+# def deletar(request, id):
+#     autor = Autor.objects.get(id=id)
+#     autor.delete()
+#     return redirect('listar')
+
+
+class NoticiaListView(LoginRequiredMixin, ListView):
     model=Noticia
     template_name='noticia/listar.html'
     context_object_name='noticias'
     ordering='-titulo'
 
 
-class NoticiaDetailView(DetailView):
+class NoticiaDetailView(LoginRequiredMixin, DetailView):
     model=Noticia
     template_name='noticia/detalhar.html'
     context_object_name='noticia'
 
 
-class NoticiaCreateView(CreateView):
+class NoticiaCreateView(LoginRequiredMixin, CreateView):
     model=Noticia
     template_name='noticia/cadastrar.html'
     form_class=NoticiaForm
@@ -87,7 +139,7 @@ class NoticiaCreateView(CreateView):
         return reverse('listar-noticia')
     
 
-class NoticiaUpdateView(UpdateView):
+class NoticiaUpdateView(LoginRequiredMixin, UpdateView):
     model=Noticia
     template_name='noticia/atualizar.html'
     form_class=NoticiaForm
@@ -97,7 +149,7 @@ class NoticiaUpdateView(UpdateView):
         return reverse('listar-noticia')
     
 
-class NoticiaDeleteView(DeleteView):
+class NoticiaDeleteView(LoginRequiredMixin, DeleteView):
     model=Noticia
     template_name='noticia/noticia_confirm_delete.html'
 
