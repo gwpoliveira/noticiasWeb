@@ -23,31 +23,21 @@ class HomeTemplateView(TemplateView):
         return context
 
 
-# def home(request):
-#     noticias = Noticia.objects.all()
-#     return render(request, 'home.html', {"noticias": noticias})
+
 
 class AutorListView(LoginRequiredMixin, ListView):
     model=Autor
     template_name='autor/listar.html'
     context_object_name='autores'
     ordering='-nome'
+    paginate_by = 5
 
-
-# def listar(request):
-#     autores = Autor.objects.all().order_by('-nome')
-#     return render(request, 'listar.html', {'autores':autores})
 
 class AutorDetailView(LoginRequiredMixin, DetailView):
     model=Autor
     template_name='autor/detalhar.html'
     context_object_name='autor'
     pk_url_kwarg='id'
-
-
-# def detalhar(request, id):
-#     autor = Autor.objects.get(id=id)
-#     return render(request, 'detalhar.html', {'autor':autor})
 
 
 class AutorCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -61,20 +51,6 @@ class AutorCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
         messages.add_message(self.request, messages.SUCCESS, "Autor cadastrado com sucesso!")
         return reverse('listar-autor')
 
-
-
-# def cadastrar(request):
-#     if request.method == "POST":
-#         form = AutorForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             messages.add_message(request, messages.SUCCESS, "Autor cadastrado com sucesso!")
-#             return redirect("listar")
-#     else:
-#          form = AutorForm()
-#          return render(request, 'cadastrar.html', {'form': form})
-
-
 class AutorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model=Autor
     template_name='autor/atualizar.html'
@@ -86,20 +62,6 @@ class AutorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         messages.add_message(self.request, messages.SUCCESS, "Autor atualizado com sucesso!")
         return reverse('listar-autor')
 
-
-# def atualizar(request, id):
-#     autor = Autor.objects.get(id=id)
-#     form = AutorForm(instance=autor)
-#     if request.method == "POST":
-#         form = AutorForm(request.POST, request.FILES, instance=autor)
-#         if form.is_valid():
-#             form.save()
-#             return redirect("atualizar", id=id)
-#         else:
-#             return render(request, 'atualizar.html', {'form': form})
-#     else:
-#          return render(request, 'atualizar.html', {'form': form})
-
 class AutorDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model=Autor
     template_name='autor/autor_confirm_delete.html'
@@ -110,18 +72,12 @@ class AutorDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         messages.add_message(self.request, messages.SUCCESS, "Autor deletado com sucesso!")
         return reverse('listar-autor')
 
-
-# def deletar(request, id):
-#     autor = Autor.objects.get(id=id)
-#     autor.delete()
-#     return redirect('listar')
-
-
 class NoticiaListView(LoginRequiredMixin, ListView):
     model=Noticia
     template_name='noticia/listar.html'
     context_object_name='noticias'
     ordering='-titulo'
+    paginate_by = 5
 
 
 class NoticiaDetailView(LoginRequiredMixin, DetailView):
