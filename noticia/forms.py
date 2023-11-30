@@ -1,4 +1,4 @@
-from django.forms import ModelForm, EmailField
+from django.forms import ModelForm, EmailField, CharField
 from .models import Autor, Noticia
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
@@ -17,9 +17,11 @@ class NoticiaForm(ModelForm):
 
 class RegistrationForm(UserCreationForm):
 
-    email = EmailField(max_length=200, label="Email")
+    first_name = CharField(max_length=150, label="Nome:")
+    lest_name = CharField(max_length=150, label="Sobrenome:")
+    email = EmailField(max_length=150, label="Email")
     
     class Meta:
         model = get_user_model()
-        fields=['username', 'email', 'password1', 'password2' ]
+        fields=['username', 'first_name','lest_name','email', 'password1', 'password2' ]
         

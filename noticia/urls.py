@@ -1,4 +1,4 @@
-from django.contrib import admin
+# from django.contrib import admin
 from django.urls import path
 from .views import AutorListView, AutorDetailView, AutorCreateView, AutorUpdateView, AutorDeleteView, NoticiaListView, NoticiaDetailView, NoticiaCreateView, NoticiaDeleteView, NoticiaUpdateView
 
